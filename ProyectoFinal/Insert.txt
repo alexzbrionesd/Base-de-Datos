@@ -1,0 +1,93 @@
+INSERT Ciudad VALUES (NEWID(),'Cancun');
+INSERT Ciudad VALUES (NEWID(),'Acapulco');
+INSERT Ciudad VALUES (NEWID(),'Mazatlan');
+INSERT Ciudad VALUES (NEWID(),'Puerto Vallarta');
+INSERT Ciudad VALUES (NEWID(),'Ciudad de Mexico');
+
+INSERT DetalleRuta VALUES (NEWID(),'2018-01-20','12:00:00');
+INSERT DetalleRuta VALUES (NEWID(),'2018-01-25','12:30:00');
+INSERT DetalleRuta VALUES (NEWID(),'2018-01-30','01:30:00');
+INSERT DetalleRuta VALUES (NEWID(),'2018-10-13','05:00:00');
+INSERT DetalleRuta VALUES (NEWID(),'2018-05-10','08:30:00');
+
+INSERT Compañia VALUES (NEWID(),'VivaAerobus');
+INSERT Compañia VALUES (NEWID(),'Interjet');
+INSERT Compañia VALUES (NEWID(),'Volaris');
+INSERT Compañia VALUES (NEWID(),'Aeromar');
+
+INSERT Transporte VALUES (NEWID(),100,(Select IdCompañia From Compañia where Nombre ='VivaAerobus'));
+INSERT Transporte VALUES (NEWID(),120,(Select IdCompañia From Compañia where Nombre ='Interjet'));
+INSERT Transporte VALUES (NEWID(),190,(Select IdCompañia From Compañia where Nombre ='Volaris'));
+INSERT Transporte VALUES (NEWID(),200,(Select IdCompañia From Compañia where Nombre ='Aeromar'));
+
+INSERT Ruta VALUES (NEWID(),100,
+(Select IdCiudad From Ciudad where Nombre = 'Cancun'),
+(Select IdCiudad From Ciudad where Nombre = 'Puerto Vallarta'),
+(Select IdDetalleRuta From DetalleRuta where FechaSalida = '2018-01-20'),
+(Select IdTransporte From Transporte where Capacidad = 100)
+);
+INSERT Ruta VALUES (NEWID(),150,
+(Select IdCiudad From Ciudad where Nombre = 'Ciudad de Mexico'),
+(Select IdCiudad From Ciudad where Nombre = 'Cancun'),
+(Select IdDetalleRuta From DetalleRuta where FechaSalida = '2018-05-10'),
+(Select IdTransporte From Transporte where Capacidad = 120)
+);
+INSERT Ruta VALUES (NEWID(),140,
+(Select IdCiudad From Ciudad where Nombre = 'Ciudad de Mexico'),
+(Select IdCiudad From Ciudad where Nombre = 'Mazatlan'),
+(Select IdDetalleRuta From DetalleRuta where FechaSalida = '2018-01-25'),
+(Select IdTransporte From Transporte where Capacidad = 200)
+);
+INSERT Ruta VALUES (NEWID(),120,
+(Select IdCiudad From Ciudad where Nombre = 'Mazatlan'),
+(Select IdCiudad From Ciudad where Nombre = 'Ciudad de Mexico'),
+(Select IdDetalleRuta From DetalleRuta where FechaSalida = '2018-10-13'),
+(Select IdTransporte From Transporte where Capacidad = 200)
+);
+
+INSERT Categoria VALUES (NEWID(),'Turista',50);
+INSERT Categoria VALUES (NEWID(),'Preferencial',75);
+INSERT Categoria VALUES (NEWID(),'Gerencial',100);
+
+INSERT TipoBoleto VALUES(NEWID(),'Adulto',500,(Select IdCategoria From Categoria where Nombre = 'Turista'));
+INSERT TipoBoleto VALUES(NEWID(),'Adulto',1000,(Select IdCategoria From Categoria where Nombre = 'Preferencial'));
+INSERT TipoBoleto VALUES(NEWID(),'Adulto',1500,(Select IdCategoria From Categoria where Nombre = 'Gerencial'));
+INSERT TipoBoleto VALUES(NEWID(),'Estudiante',250,(Select IdCategoria From Categoria where Nombre = 'Turista'));
+INSERT TipoBoleto VALUES(NEWID(),'Estudiante',500,(Select IdCategoria From Categoria where Nombre = 'Preferencial'));
+INSERT TipoBoleto VALUES(NEWID(),'Estudiante',750,(Select IdCategoria From Categoria where Nombre = 'Gerencial'));
+
+INSERT Boleto VALUES (NEWID(),(SELECT IdRuta FROM Ruta WHERE PrecioBase = 140),
+(SELECT IdTipoBoleto FROM TipoBoleto WHERE Precio = 1500));
+INSERT Boleto VALUES (NEWID(),(SELECT IdRuta FROM Ruta WHERE PrecioBase = 100),
+(SELECT IdTipoBoleto FROM TipoBoleto WHERE Precio = 1000));
+INSERT Boleto VALUES (NEWID(),(SELECT IdRuta FROM Ruta WHERE PrecioBase = 100),
+(SELECT IdTipoBoleto FROM TipoBoleto WHERE Precio = 250));
+INSERT Boleto VALUES (NEWID(),(SELECT IdRuta FROM Ruta WHERE PrecioBase = 150),
+(SELECT IdTipoBoleto FROM TipoBoleto WHERE Precio = 750));
+
+INSERT Habitacion VALUES (NEWID(),1000,1,'Habitacion Promedio',1);
+INSERT Habitacion VALUES (NEWID(),1000,2,'Habitacion Promedio',2);
+INSERT Habitacion VALUES (NEWID(),2000,1,'Suit',1);
+INSERT Habitacion VALUES (NEWID(),2000,2,'Suit',3);
+
+INSERT Hotel VALUES (NEWID(),'Live Aqua Urban Resort Mexico',(SELECT IdHabitacion FROM Habitacion WHERE Dias = 2));
+INSERT Hotel VALUES (NEWID(),'Fiesta Americana Reforma',(SELECT IdHabitacion FROM Habitacion WHERE Dias = 3));
+
+INSERT Cliente VALUES (NEWID(),'Brando','Francisco','Vargas','1671986','Plata','Fomerrey 22','Santa Catarina','Nuevo Leon');
+INSERT Cliente VALUES (NEWID(),'Alexandra','Zapata','Briones','1725850','Carbon','Santa Ana','Apodaca','Nuevo Leon');
+
+INSERT DetalleVenta VALUES (NEWID(),(SELECT IdHotel FROM Hotel WHERE Nombre = 'Fiesta Americana Reforma'),
+(SELECT IdBoleto FROM Boleto WHERE PrecioTotal = 1000));
+INSERT DetalleVenta VALUES (NEWID(),(SELECT IdHotel FROM Hotel WHERE Nombre = 'Live Aqua Urban Resort Mexico'),
+(SELECT IdBoleto FROM Boleto WHERE PrecioTotal = 1740));
+
+INSERT Venta VALUES (NEWID(),'2018-01-20','01:00:00',3000,(SELECT IdDetalleVenta FROM DetalleVenta WHERE MontoFinal = 13000));
+INSERT Venta VALUES (NEWID(),'2018-05-26','04:30:00',2000,(SELECT IdDetalleVenta FROM DetalleVenta WHERE MontoFinal = 5740));
+
+INSERT Pago VALUES (NEWID(),(SELECT IdVenta FROM Venta WHERE Total = 2000),'2018-01-21','Efectivo', 2000);
+INSERT Pago VALUES (NEWID(),(SELECT IdVenta FROM Venta WHERE Total = 3000),'2018-06-26','Efectivo', 3000);
+
+INSERT Paquete VALUES (NEWID(),'El mejor combo',(SELECT IdCliente FROM Cliente WHERE Nombre = 'Brando'),
+(SELECT IdVenta FROM Venta WHERE Total = 2000));
+INSERT Paquete VALUES (NEWID(),'Promocion',(SELECT IdCliente FROM Cliente WHERE Nombre = 'Alexandra'),
+(SELECT IdVenta FROM Venta WHERE Total = 3000));
